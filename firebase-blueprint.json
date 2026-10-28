@@ -1,0 +1,290 @@
+{
+  "entities": {
+    "CloudSave": {
+      "title": "CloudSave",
+      "description": "Cross-platform cloud save state for a player in Abyssal Labyrinth.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Authenticated Firebase user UID owning this save.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Player chosen hero display name (no PII).",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "level": {
+          "type": "integer",
+          "description": "Current hero level (1 to 100)."
+        },
+        "xp": {
+          "type": "integer",
+          "description": "Current experience points."
+        },
+        "gold": {
+          "type": "integer",
+          "description": "Total collected gold treasure."
+        },
+        "highestFloor": {
+          "type": "integer",
+          "description": "Deepest procedural labyrinth floor reached."
+        },
+        "totalScore": {
+          "type": "integer",
+          "description": "Cumulative best dungeon score."
+        },
+        "skillPoints": {
+          "type": "integer",
+          "description": "Unspent skill points."
+        },
+        "equippedWeaponId": {
+          "type": "string",
+          "description": "ID of currently equipped weapon.",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "equippedArmorId": {
+          "type": "string",
+          "description": "ID of currently equipped armor.",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "equippedRelicId": {
+          "type": "string",
+          "description": "ID of currently equipped artifact relic.",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "avatarClass": {
+          "type": "string",
+          "description": "Selected hero class archetype.",
+          "enum": ["klingenmeister", "runenmagier", "schattenlaeufer"]
+        },
+        "avatarColor": {
+          "type": "string",
+          "description": "Hex color of hero armor trim.",
+          "minLength": 4,
+          "maxLength": 16
+        },
+        "avatarCrest": {
+          "type": "string",
+          "description": "Selected heraldic crest identifier.",
+          "enum": ["phoenix", "drache", "krone", "abyss"]
+        },
+        "avatarTitle": {
+          "type": "string",
+          "description": "Selected hero title.",
+          "minLength": 1,
+          "maxLength": 48
+        },
+        "enemiesSlain": {
+          "type": "integer",
+          "description": "Total enemies defeated across runs."
+        },
+        "chestsOpened": {
+          "type": "integer",
+          "description": "Total treasure chests opened."
+        },
+        "secretsFound": {
+          "type": "integer",
+          "description": "Total secret rewards discovered."
+        },
+        "dailyStreak": {
+          "type": "integer",
+          "description": "Consecutive daily login streak count."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of initial cloud save creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of latest cloud save sync."
+        }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "level",
+        "xp",
+        "gold",
+        "highestFloor",
+        "totalScore",
+        "skillPoints",
+        "equippedWeaponId",
+        "equippedArmorId",
+        "equippedRelicId",
+        "avatarClass",
+        "avatarColor",
+        "avatarCrest",
+        "avatarTitle",
+        "enemiesSlain",
+        "chestsOpened",
+        "secretsFound",
+        "dailyStreak",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Public high-score entry for standard dungeon runs and weekly events.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Authenticated user UID who submitted the score.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "playerName": {
+          "type": "string",
+          "description": "Public hero display name.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "avatarClass": {
+          "type": "string",
+          "description": "Hero class used for the run.",
+          "enum": ["klingenmeister", "runenmagier", "schattenlaeufer"]
+        },
+        "avatarColor": {
+          "type": "string",
+          "description": "Hero armor color hex.",
+          "minLength": 4,
+          "maxLength": 16
+        },
+        "titleBadge": {
+          "type": "string",
+          "description": "Equipped hero title.",
+          "minLength": 1,
+          "maxLength": 48
+        },
+        "score": {
+          "type": "integer",
+          "description": "Run score achieved."
+        },
+        "floorReached": {
+          "type": "integer",
+          "description": "Dungeon floor reached in the run."
+        },
+        "enemiesSlain": {
+          "type": "integer",
+          "description": "Enemies defeated in the run."
+        },
+        "goldCollected": {
+          "type": "integer",
+          "description": "Gold collected during the run."
+        },
+        "mode": {
+          "type": "string",
+          "description": "Run mode category.",
+          "enum": ["standard", "daily", "weekly"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the score was first posted."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the score was updated."
+        }
+      },
+      "required": [
+        "uid",
+        "playerName",
+        "avatarClass",
+        "avatarColor",
+        "titleBadge",
+        "score",
+        "floorReached",
+        "enemiesSlain",
+        "goldCollected",
+        "mode",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Real-time tavern and dungeon guild chat message.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Sender user UID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "senderName": {
+          "type": "string",
+          "description": "Sender hero name.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "senderTitle": {
+          "type": "string",
+          "description": "Sender hero title badge.",
+          "minLength": 1,
+          "maxLength": 48
+        },
+        "avatarColor": {
+          "type": "string",
+          "description": "Sender avatar color.",
+          "minLength": 4,
+          "maxLength": 16
+        },
+        "channel": {
+          "type": "string",
+          "description": "Chat channel identifier.",
+          "enum": ["global", "gilde", "ereignisse"]
+        },
+        "text": {
+          "type": "string",
+          "description": "Chat message content.",
+          "minLength": 1,
+          "maxLength": 280
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of message creation."
+        }
+      },
+      "required": [
+        "uid",
+        "senderName",
+        "senderTitle",
+        "avatarColor",
+        "channel",
+        "text",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/saves/{userId}": {
+      "schema": { "$ref": "#/entities/CloudSave" },
+      "description": "Private cross-platform cloud save documents keyed by user UID."
+    },
+    "/leaderboard/{entryId}": {
+      "schema": { "$ref": "#/entities/LeaderboardEntry" },
+      "description": "Public leaderboard entries for standard, daily, and weekly dungeon challenges."
+    },
+    "/chatMessages/{messageId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "In-game chat messages across tavern channels."
+    }
+  }
+}

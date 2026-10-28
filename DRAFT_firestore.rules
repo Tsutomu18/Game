@@ -1,0 +1,269 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Pillar 1: Global Safety Net (Default-Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Hardened Global Primitives
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    // Validation Blueprint: CloudSave
+    function isValidCloudSave(data) {
+      return data.keys().hasAll([
+        'uid',
+        'displayName',
+        'level',
+        'xp',
+        'gold',
+        'highestFloor',
+        'totalScore',
+        'skillPoints',
+        'equippedWeaponId',
+        'equippedArmorId',
+        'equippedRelicId',
+        'avatarClass',
+        'avatarColor',
+        'avatarCrest',
+        'avatarTitle',
+        'enemiesSlain',
+        'chestsOpened',
+        'secretsFound',
+        'dailyStreak',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'uid',
+        'displayName',
+        'level',
+        'xp',
+        'gold',
+        'highestFloor',
+        'totalScore',
+        'skillPoints',
+        'equippedWeaponId',
+        'equippedArmorId',
+        'equippedRelicId',
+        'avatarClass',
+        'avatarColor',
+        'avatarCrest',
+        'avatarTitle',
+        'enemiesSlain',
+        'chestsOpened',
+        'secretsFound',
+        'dailyStreak',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$') &&
+      data.uid == request.auth.uid &&
+      data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 40 &&
+      data.level is int && data.level >= 1 && data.level <= 500 &&
+      data.xp is int && data.xp >= 0 && data.xp <= 100000000 &&
+      data.gold is int && data.gold >= 0 && data.gold <= 100000000 &&
+      data.highestFloor is int && data.highestFloor >= 1 && data.highestFloor <= 1000 &&
+      data.totalScore is int && data.totalScore >= 0 && data.totalScore <= 100000000 &&
+      data.skillPoints is int && data.skillPoints >= 0 && data.skillPoints <= 1000 &&
+      data.equippedWeaponId is string && data.equippedWeaponId.size() >= 1 && data.equippedWeaponId.size() <= 64 &&
+      data.equippedArmorId is string && data.equippedArmorId.size() >= 1 && data.equippedArmorId.size() <= 64 &&
+      data.equippedRelicId is string && data.equippedRelicId.size() >= 1 && data.equippedRelicId.size() <= 64 &&
+      data.avatarClass is string && data.avatarClass.size() <= 32 && data.avatarClass in ['klingenmeister', 'runenmagier', 'schattenlaeufer'] &&
+      data.avatarColor is string && data.avatarColor.size() >= 4 && data.avatarColor.size() <= 16 &&
+      data.avatarCrest is string && data.avatarCrest.size() <= 32 && data.avatarCrest in ['phoenix', 'drache', 'krone', 'abyss'] &&
+      data.avatarTitle is string && data.avatarTitle.size() >= 1 && data.avatarTitle.size() <= 48 &&
+      data.enemiesSlain is int && data.enemiesSlain >= 0 && data.enemiesSlain <= 10000000 &&
+      data.chestsOpened is int && data.chestsOpened >= 0 && data.chestsOpened <= 10000000 &&
+      data.secretsFound is int && data.secretsFound >= 0 && data.secretsFound <= 10000 &&
+      data.dailyStreak is int && data.dailyStreak >= 0 && data.dailyStreak <= 3650 &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // Validation Blueprint: LeaderboardEntry
+    function isValidLeaderboardEntry(data) {
+      return data.keys().hasAll([
+        'uid',
+        'playerName',
+        'avatarClass',
+        'avatarColor',
+        'titleBadge',
+        'score',
+        'floorReached',
+        'enemiesSlain',
+        'goldCollected',
+        'mode',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'uid',
+        'playerName',
+        'avatarClass',
+        'avatarColor',
+        'titleBadge',
+        'score',
+        'floorReached',
+        'enemiesSlain',
+        'goldCollected',
+        'mode',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$') &&
+      data.uid == request.auth.uid &&
+      data.playerName is string && data.playerName.size() >= 1 && data.playerName.size() <= 40 &&
+      data.avatarClass is string && data.avatarClass.size() <= 32 && data.avatarClass in ['klingenmeister', 'runenmagier', 'schattenlaeufer'] &&
+      data.avatarColor is string && data.avatarColor.size() >= 4 && data.avatarColor.size() <= 16 &&
+      data.titleBadge is string && data.titleBadge.size() >= 1 && data.titleBadge.size() <= 48 &&
+      data.score is int && data.score >= 0 && data.score <= 100000000 &&
+      data.floorReached is int && data.floorReached >= 1 && data.floorReached <= 1000 &&
+      data.enemiesSlain is int && data.enemiesSlain >= 0 && data.enemiesSlain <= 10000000 &&
+      data.goldCollected is int && data.goldCollected >= 0 && data.goldCollected <= 100000000 &&
+      data.mode is string && data.mode.size() <= 16 && data.mode in ['standard', 'daily', 'weekly'] &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // Validation Blueprint: ChatMessage
+    function isValidChatMessage(data) {
+      return data.keys().hasAll([
+        'uid',
+        'senderName',
+        'senderTitle',
+        'avatarColor',
+        'channel',
+        'text',
+        'createdAt'
+      ]) &&
+      data.keys().hasOnly([
+        'uid',
+        'senderName',
+        'senderTitle',
+        'avatarColor',
+        'channel',
+        'text',
+        'createdAt'
+      ]) &&
+      data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$') &&
+      data.uid == request.auth.uid &&
+      data.senderName is string && data.senderName.size() >= 1 && data.senderName.size() <= 40 &&
+      data.senderTitle is string && data.senderTitle.size() >= 1 && data.senderTitle.size() <= 48 &&
+      data.avatarColor is string && data.avatarColor.size() >= 4 && data.avatarColor.size() <= 16 &&
+      data.channel is string && data.channel.size() <= 16 && data.channel in ['global', 'gilde', 'ereignisse'] &&
+      data.text is string && data.text.size() >= 1 && data.text.size() <= 280 &&
+      data.createdAt is timestamp;
+    }
+
+    // Collection 1: Cloud Saves (/saves/{userId})
+    match /saves/{userId} {
+      allow get: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+      allow list: if false;
+      allow create: if isVerifiedUser() &&
+        isValidId(userId) &&
+        request.auth.uid == userId &&
+        isValidCloudSave(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if (
+        isVerifiedUser() &&
+        isValidId(userId) &&
+        isValidCloudSave(incoming()) &&
+        request.auth.uid == userId &&
+        existing().uid == request.auth.uid &&
+        incoming().uid == existing().uid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'displayName',
+            'level',
+            'xp',
+            'gold',
+            'highestFloor',
+            'totalScore',
+            'skillPoints',
+            'equippedWeaponId',
+            'equippedArmorId',
+            'equippedRelicId',
+            'avatarClass',
+            'avatarColor',
+            'avatarCrest',
+            'avatarTitle',
+            'enemiesSlain',
+            'chestsOpened',
+            'secretsFound',
+            'dailyStreak',
+            'updatedAt'
+          ])
+        )
+      );
+      allow delete: if isVerifiedUser() && isValidId(userId) && request.auth.uid == userId && existing().uid == request.auth.uid;
+    }
+
+    // Collection 2: Leaderboard (/leaderboard/{entryId})
+    match /leaderboard/{entryId} {
+      allow get: if isValidId(entryId) && existing().score >= 0 && existing().score <= 100000000;
+      allow list: if resource.data.score >= 0 && resource.data.score <= 100000000 && resource.data.mode in ['standard', 'daily', 'weekly'];
+      allow create: if isVerifiedUser() &&
+        isValidId(entryId) &&
+        isValidLeaderboardEntry(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if (
+        isVerifiedUser() &&
+        isValidId(entryId) &&
+        isValidLeaderboardEntry(incoming()) &&
+        existing().uid == request.auth.uid &&
+        incoming().uid == existing().uid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'playerName',
+            'avatarClass',
+            'avatarColor',
+            'titleBadge',
+            'score',
+            'floorReached',
+            'enemiesSlain',
+            'goldCollected',
+            'mode',
+            'updatedAt'
+          ])
+        )
+      );
+      allow delete: if isVerifiedUser() && isValidId(entryId) && existing().uid == request.auth.uid;
+    }
+
+    // Collection 3: In-Game Chat (/chatMessages/{messageId})
+    match /chatMessages/{messageId} {
+      allow get: if isValidId(messageId) && existing().channel in ['global', 'gilde', 'ereignisse'];
+      allow list: if resource.data.channel in ['global', 'gilde', 'ereignisse'] && resource.data.text.size() <= 280;
+      allow create: if isVerifiedUser() &&
+        isValidId(messageId) &&
+        isValidChatMessage(incoming()) &&
+        incoming().createdAt == request.time;
+      allow update: if false;
+      allow delete: if isVerifiedUser() && isValidId(messageId) && existing().uid == request.auth.uid;
+    }
+  }
+}

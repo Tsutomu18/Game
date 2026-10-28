@@ -1,0 +1,6 @@
+{
+  "name": "Abyssal Labyrinth: Relics of the Deep",
+  "description": "Ein prozedural generierter 3D-Dungeon-Crawler mit Inventar, Skill-System, 3 Gegnertypen, täglichen & wöchentlichen Herausforderungen, Cloud-Speicher, Bestenliste, Erfolgen, Social-Share und In-Game-Chat.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
